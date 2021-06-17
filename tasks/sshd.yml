@@ -1,0 +1,13 @@
+- name: install packages
+  apk:
+    name:
+      - openssh-server-pam
+
+- name: Enable PAM
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#UsePAM no'
+    line: 'UsePAM yes'
+
+- name: Restart sshd
+  service: name=sshd state=restarted

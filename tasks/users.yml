@@ -1,0 +1,28 @@
+---
+- name: ensure sudo is installed
+  apk: name=sudo
+
+- name: add {{ sudo_group }} group
+  group:
+    name: '{{ sudo_group }}'
+    state: present
+
+- name: add {{ sudo_group }} to sudoers file
+  shell: echo '%{{ sudo_group }} ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/{{ sudo_group }}
+
+- name: add ansible user
+  user:
+    name: '{{ item }}'
+    shell: /bin/bash
+    groups: '{{ sudo_group }}'
+    append: yes
+    state: present
+  with_items:
+    - ansible
+
+- name: set up authorized keys for ansible
+  authorized_key:
+    user: ansible
+    state: present
+    key: '{{ item }}'
+  with_file: '{{ ansible_ssh_authorized_keys }}'

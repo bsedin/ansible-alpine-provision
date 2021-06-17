@@ -1,0 +1,8 @@
+---
+- name: install packages
+  apk:
+    name:
+      - acl
+      - bash
+      - vim
+      - htop
